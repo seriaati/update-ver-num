@@ -29,7 +29,7 @@ runs:
       shell: bash
 
     - name: Run script.py
-      run: .venv/Scripts/python.exe script.py
+      run: .venv/bin/python script.py
       shell: bash
 
     - name: Update uv.lock
