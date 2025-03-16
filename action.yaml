@@ -20,8 +20,12 @@ runs:
       run: uv pip install gitpython
       shell: bash
 
+    - name: Print out files in current directory
+      run: ls -la
+      shell: bash
+
     - name: Run script.py
-      run: uv run script.py
+      run: .venv/Scripts/python.exe script.py
       shell: bash
 
     - name: Update uv.lock
