@@ -1,6 +1,11 @@
 name: updater-ver-num
 description: CI to update project version number in pyproject.toml, only works with uv projects.
 
+inputs:
+  github_token:
+    description: 'GitHub Token'
+    required: true
+
 runs:
   using: composite
   steps:
@@ -34,5 +39,5 @@ runs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ inputs.github_token }}
         branch: ${{ github.ref }}
