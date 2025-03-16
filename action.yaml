@@ -24,6 +24,10 @@ runs:
       run: ls -la
       shell: bash
 
+    - name: Download script.py
+      run: curl -o script.py https://raw.githubusercontent.com/seriaati/update-ver-num/refs/heads/main/script.py
+      shell: bash
+
     - name: Run script.py
       run: .venv/Scripts/python.exe script.py
       shell: bash
