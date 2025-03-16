@@ -1,0 +1,38 @@
+name: updater-ver-num
+description: CI to update project version number in pyproject.toml, only works with uv projects.
+
+runs:
+  using: composite
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
+    - name: Set up Python
+      run: uv python install && uv venv
+      shell: bash
+
+    - name: Install GitPython
+      run: uv pip install gitpython
+      shell: bash
+
+    - name: Run script.py
+      run: uv run script.py
+      shell: bash
+
+    - name: Update uv.lock
+      run: uv lock
+      shell: bash
+
+    - name: Commit changes
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add pyproject.toml uv.lock
+        git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ver): Bump version")
+      shell: bash
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}

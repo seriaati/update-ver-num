@@ -1,2 +1,3 @@
 # update-ver-num
- Update project version number in pyproject.toml
+
+CI to update project version number in pyproject.toml, only works with uv projects.
