@@ -9,34 +9,34 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Get the latest commit message
+      id: get-commit-msg
+      run: |
+        COMMIT_MSG=$(git log -1 --pretty=format:%s)
+        echo "commit_msg=$COMMIT_MSG" >> $GITHUB_OUTPUT
+      shell: bash
+    
+    - name: Version bump detected
+      if: ${{ contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
+      run: echo "Version bump detected."
+      shell: bash
+
     - name: Install uv
+      if: ${{ !contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
       uses: astral-sh/setup-uv@v5
 
-    - name: Set up Python
-      run: uv python install && uv venv
-      shell: bash
-
-    - name: Install GitPython
-      run: uv pip install gitpython
-      shell: bash
-
-    - name: Print out files in current directory
-      run: ls -la
-      shell: bash
-
-    - name: Download script.py
-      run: curl -o script.py https://raw.githubusercontent.com/seriaati/update-ver-num/refs/heads/main/script.py
-      shell: bash
-
-    - name: Run script.py
-      run: .venv/bin/python script.py
-      shell: bash
-
-    - name: Update uv.lock
-      run: uv lock
+    - name: Bump version and update lock file
+      if: ${{ !contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
+      run: uv version --bump patch && uv lock
       shell: bash
 
     - name: Commit changes
+      if: ${{ !contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
@@ -45,6 +45,7 @@ runs:
       shell: bash
 
     - name: Push changes
+      if: ${{ !contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ inputs.github_token }}
