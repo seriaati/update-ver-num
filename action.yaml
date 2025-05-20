@@ -16,9 +16,9 @@ runs:
         echo "commit_msg=$COMMIT_MSG" >> $GITHUB_OUTPUT
       shell: bash
     
-    - name: Version bump detected
+    - name: Version bump commit detected
       if: ${{ contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
-      run: echo "Version bump detected."
+      run: echo "Version bump commit detected."
       shell: bash
 
     - name: Install uv
