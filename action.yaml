@@ -27,7 +27,7 @@ runs:
 
     - name: Bump version and update lock file
       if: ${{ !contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
-      run: uv version --bump patch && uv lock
+      run: uv version --bump patch
       shell: bash
 
     - name: Commit changes
