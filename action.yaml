@@ -3,8 +3,12 @@ description: CI to update project version number in pyproject.toml, only works w
 
 inputs:
   github_token:
-    description: 'GitHub Token'
+    description: "GitHub Token"
     required: true
+  bump_type:
+    description: "Version bump type (major, minor, or patch)"
+    required: false
+    default: "patch"
 
 runs:
   using: composite
@@ -15,7 +19,7 @@ runs:
         COMMIT_MSG=$(git log -1 --pretty=format:%s)
         echo "commit_msg=$COMMIT_MSG" >> $GITHUB_OUTPUT
       shell: bash
-    
+
     - name: Version bump commit detected
       if: ${{ contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
       run: echo "Version bump commit detected."
@@ -27,7 +31,7 @@ runs:
 
     - name: Bump version and update lock file
       if: ${{ !contains(steps.get-commit-msg.outputs.commit_msg, 'Bump version') }}
-      run: uv version --bump patch
+      run: uv version --bump ${{ inputs.bump_type }}
       shell: bash
 
     - name: Commit changes
